@@ -3,27 +3,31 @@
 import { JSX } from "react";
 import { useRouter } from "next/navigation";
 
-const ContactPage = (): JSX.Element => {
-
-    const router = useRouter();
+const SearchPage = (): JSX.Element => {
+    
+    const router = useRouter()
 
     return (
         <div className="w-full h-screen border border-cyan-400">
 
-            <div className="relative w-full border border-red-600">
+            <div>
                 <button type="button" onClick={() => router.push('/')}
                     className="absolute top-4 right-4 px-4 py-2 text-sm font-bold bg-blue-600 hover:bg-blue-700 active:bg-blue-500 
-                        scale-100 hover:scale-105 active:scale-95 border-radius rounded-md cursor-pointer"
-                >
+                        scale-100 hover:scale-105 active:scale-95 border-radius rounded-md cursor-pointer"        
+            >
                     Home
                 </button>
             </div>
 
-            <div className="text-3xl font-bold border border-yellow-400 m-10">
-                <h1>Contact Page</h1>
+            <div className="border border-cyan-400">
+                <h1>Search Page</h1>
+            </div>
+
+            <div>
+                searchbar
             </div>
 
         </div>
     )
 };
-export default ContactPage;
+export default SearchPage;
