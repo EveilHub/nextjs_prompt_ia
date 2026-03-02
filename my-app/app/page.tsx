@@ -4,9 +4,9 @@ import Link from "next/link";
 const Home = (): JSX.Element => {
 
   return (
-    <div className="w-full min-h-screen bg-zinc-50 font-sans dark:bg-black">
+    <div className="w-full bg-zinc-50 font-sans dark:bg-black">
 
-      <main className="min-h-screen bg-white dark:bg-black border border-red-400">
+      <main className="bg-white dark:bg-black border border-red-400">
 
         <div className="w-full text-center my-10 border border-yellow-400">
 
