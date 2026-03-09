@@ -1,8 +1,9 @@
 "use client";
 
+import { JSX } from "react";
 import { useRouter } from "next/navigation";
 
-const BtnHome = () => {
+const BtnHome = (): JSX.Element => {
 
     const router = useRouter();
 

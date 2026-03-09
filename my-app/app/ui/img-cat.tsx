@@ -12,11 +12,6 @@ const ImgCat = (): JSX.Element => {
 
     const [displayId, setDisplayId] = useState<string | undefined>(undefined);
 
-    const handleCat = (id: string) => {
-        const mappingCat: string | undefined = catImage.find((cat: string) => cat === id);
-        setDisplayId(mappingCat);
-    };
-
     useEffect(() => {
         const fetchCat = async () => {
             try {
@@ -36,10 +31,13 @@ const ImgCat = (): JSX.Element => {
         fetchCat();
     }, []);
 
+    const handleCat = (id: string): void => {
+        const mappingCat: string | undefined = catImage.find((cat: string) => cat === id);
+        setDisplayId(mappingCat);
+    };
+
     if (loading) return <div>Chargement...</div>;
     if (error) return <div>Erreur: {error}</div>;
-
-    console.log("cat", catImage);
 
     return (
         <div className="grid grid-cols-5 grid-rows-5 gap-4 ">
