@@ -38,7 +38,13 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     if (error) {
         return (<>
             <p style={{color: "red"}}>{error}</p>
-            <button type="button" onClick={() => setError("")} style={{marginLeft: "20px"}}>Refresh</button>
+            <button 
+                type="button" 
+                onClick={() => setError("")} 
+                className="bg-blue-500 mx-4 rounded-md hover:bg-blue-600 active:bg-blue-400 mx-4 px-4 py-2"
+            >
+                    Refresh
+            </button>
         </>);
     };
 
