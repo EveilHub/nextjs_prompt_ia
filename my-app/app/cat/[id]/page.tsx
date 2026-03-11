@@ -28,7 +28,7 @@ const CatRetrieve = async ({params}: {params: Promise<{ id: string }>}): Promise
     return (
         <div className="flex flex-col items-center justify-center w-full h-auto m-auto mt-20">
             <Image 
-                src={`https://cataas.com/cat/${id}`}
+                src={imageUrl}
                 width={500}
                 height={500}
                 loading="eager"
