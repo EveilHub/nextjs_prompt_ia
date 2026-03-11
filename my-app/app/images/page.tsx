@@ -1,6 +1,7 @@
 "use server";
 
-import { JSX } from "react";
+import { JSX, Suspense } from "react";
+import Loading from "./loading";
 import BtnHome from "../ui/btn-home";
 import ImgCat from "../ui/img-cat";
 
@@ -14,7 +15,9 @@ const ImagesPage = async (): Promise<JSX.Element> => {
             </div>
 
             <div className="w-full flex justify-center">
-                <ImgCat />
+                <Suspense fallback={<Loading />}>
+                    <ImgCat />
+                </Suspense>
             </div>
         </div>
     )

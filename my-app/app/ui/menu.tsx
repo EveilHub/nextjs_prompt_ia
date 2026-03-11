@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Menu = (): JSX.Element => {
     return (
-        <div className="w-full flex flex-row items-center justify-around text-lg font-bold bg-slate-800/70 py-4">
+        <div className="w-full h-[8vh] flex flex-row items-center justify-around text-lg font-bold bg-slate-800/70">
             <Link href="/" className="text-cyan-400 hover:text-cyan-500 active:text-cyan-300">Home</Link>
             <Link href="/images" className="text-cyan-400 hover:text-cyan-500 active:text-cyan-300">Images</Link>
             <Link href="/search" className="text-cyan-400 hover:text-cyan-500 active:text-cyan-300">Search</Link>
