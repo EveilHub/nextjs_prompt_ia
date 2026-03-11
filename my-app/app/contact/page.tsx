@@ -9,7 +9,7 @@ const ContactPage = (): JSX.Element => {
     return (
         <div className="w-full h-full relative">
 
-            <div className="flex justify-between text-3xl font-bold m-10 relative z-10">
+            <div className="flex justify-between text-3xl font-bold p-10 relative z-10">
                 <h1>Contact Page</h1>
                 <BtnHome />
             </div>

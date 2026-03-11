@@ -8,7 +8,7 @@ const ImagesPage = async (): Promise<JSX.Element> => {
     return (
         <div className="w-full h-full">
 
-            <div className="flex justify-between text-3xl font-bold m-10">
+            <div className="flex justify-between text-3xl font-bold p-10">
                 <h1>Images Page</h1>
                 <BtnHome />
             </div>

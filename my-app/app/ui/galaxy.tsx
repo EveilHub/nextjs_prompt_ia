@@ -1,3 +1,4 @@
+import { GalaxyProps } from '@/lib/type';
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
 
@@ -168,25 +169,6 @@ void main() {
   }
 }
 `;
-
-interface GalaxyProps {
-  focal?: [number, number];
-  rotation?: [number, number];
-  starSpeed?: number;
-  density?: number;
-  hueShift?: number;
-  disableAnimation?: boolean;
-  speed?: number;
-  mouseInteraction?: boolean;
-  glowIntensity?: number;
-  saturation?: number;
-  mouseRepulsion?: boolean;
-  twinkleIntensity?: number;
-  rotationSpeed?: number;
-  repulsionStrength?: number;
-  autoCenterRepulsion?: number;
-  transparent?: boolean;
-}
 
 export default function Galaxy({
   focal = [0.5, 0.5],

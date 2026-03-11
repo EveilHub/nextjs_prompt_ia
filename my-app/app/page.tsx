@@ -8,7 +8,7 @@ const Home = (): JSX.Element => {
 
       <main className="bg-white dark:bg-black">
 
-        <div className="w-full text-center my-10">
+        <div className="w-full text-center py-10">
 
           <h1 className="text-3xl font-bold">Prompt IA</h1>
         
