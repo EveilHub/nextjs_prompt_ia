@@ -1,8 +1,7 @@
-//"use client";
-
-import { JSX } from "react";
+import { JSX, Suspense } from "react";
 import BtnHome from "../ui/btn-home";
 import SearchBar from "../ui/search-bar";
+import Loading from "./loading";
 
 const SearchPage = (): JSX.Element => {
 
@@ -15,7 +14,9 @@ const SearchPage = (): JSX.Element => {
             </div>
 
             <div className="flex items-center justify-center border border-yellow-400">
-                <SearchBar placeholder="Search images..." />
+                <Suspense fallback={<Loading />}>
+                    <SearchBar placeholder="Search images..." />
+                </Suspense>
             </div>
 
         </div>
