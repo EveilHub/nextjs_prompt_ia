@@ -33,6 +33,7 @@ const CatRetrieve = async ({params}: {params: Promise<{ id: string }>}): Promise
                 height={500}
                 loading="eager"
                 alt={caption}
+                className="rounded-lg"
                 unoptimized
             />
             <p className="mt-4 text-slate-200/90">{caption}</p>

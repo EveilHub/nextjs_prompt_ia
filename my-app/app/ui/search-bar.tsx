@@ -1,39 +1,67 @@
 "use client";
 
-import { SubmitEvent, JSX, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SubmitEvent, JSX, useState, ChangeEvent, useEffect } from "react";
+import Link from "next/link";
 
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
 
-    const pathname: string = usePathname();
-    const { replace } = useRouter();
-    const searchParams = useSearchParams();
-    const router = useRouter();
+    const pages: string[] = ["home", "images", "search", "contact"];
+
+    const [word, setWord] = useState<string>("");
+    const [words, setWords] = useState<string[]>([]);
     const [error, setError] = useState<string | undefined>(undefined);
 
-    const handleSearch = (term: string): void => {
-        // console.log(term);
-        const params = new URLSearchParams(searchParams);
-        if (term) {
-            params.set('query', term);
-        } else {
-            params.delete('query');
+    // Stocke les traductions pour éviter plusieurs appels
+    const [translations, setTranslations] = useState<{ [key: string]: string }>({});
+    
+    console.log(translations);
+
+    // Fonction pour traduire un texte via LibreTranslate
+    const translateText = async (text: string, targetLang: string = "en") => {
+        try {
+            const res = await fetch("/api/translate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text, targetLang }),
+            });
+            const data = await res.json();
+            return data.translation || text;
+        } catch (err) {
+            console.error("Translation error:", err);
+        return text;
         }
-        replace(`${pathname}?${params.toString()}`);
     };
 
-    const validateSearch = (e: SubmitEvent<HTMLFormElement>): void | JSX.Element => {
-        e.preventDefault();
+    const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value;
+        setWord(value);
+    };
 
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>): void | JSX.Element => {
+        e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const value = formData.get("query");
-
-        if (value === "search" || value === "contact" || value === "images") {
-            router.push(`/${value}`);
-        } else {
-            setError("! Erreur Page introuvable !");
-        }
+        if (value) {
+            setWords((prev: string[]) => [...prev, String(value)]);
+            setWord("");
+        };
     };
+
+    // Traduire tous les mots qui ne sont pas dans pages
+    useEffect(() => {
+        const translateWords = async () => {
+            for (const link of words) {
+                if (pages.includes(link)) continue;
+                if (translations[link]) continue;
+                const translated = await translateText(link, "en");
+                setTranslations(prev => ({
+                    ...prev,
+                    [link]: translated
+                }));
+            }
+        };
+        translateWords();
+    }, [words]);
 
     if (error) {
         return (<>
@@ -43,26 +71,49 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
                 onClick={() => setError("")} 
                 className="bg-blue-500 mx-4 rounded-md hover:bg-blue-600 active:bg-blue-400 mx-4 px-4 py-2"
             >
-                    Refresh
+                Refresh
             </button>
         </>);
     };
 
     return (
-        <form onSubmit={(e) => validateSearch(e)} className="w-2/3 flex flex-row">
-            <input
-                name="query"
-                className="peer block w-[90%] rounded-md py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                placeholder={placeholder}
-                onChange={(e) => {
-                    handleSearch(e.target.value);
-                }}
-                defaultValue={searchParams.get('query')?.toString()}
-            />
-            <button type="submit" className="w-[10%] bg-blue-500 mx-4 rounded-md hover:bg-blue-600 active:bg-blue-400">
-                Enter
-            </button>
-        </form>
+        <div className="flex flex-col items-center w-full">
+
+            <form onSubmit={(e) => handleSubmit(e)} className="w-1/2 flex flex-row justify-between">
+
+                <input
+                    name="query"
+                    value={word}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none 
+                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    placeholder={placeholder}
+                    onChange={handleSearch}
+                />
+                
+                <button type="submit" className="w-[10%] font-bold bg-blue-500 rounded-md 
+                    hover:bg-blue-600 active:bg-blue-400 ml-4">
+                    Enter
+                </button>
+
+            </form>
+
+            <div className="flex flex-col items-center justify-center w-1/2 h-auto mt-10 pt-10 pb-5 
+                bg-slate-700/70 border border-slate-500 rounded-lg">
+                
+                {words.slice(0).reverse().map((link: string, index: number) => (
+                    <div key={index} className="text-slate-100 mb-4">
+
+                        {pages.includes(link) ? (
+                            <Link href={link}>{link}</Link>
+                        ) : (
+                            <p>{translations[link] ?? "translating..."} - {link}</p>
+                        )}
+                        
+                    </div>
+                ))}
+
+            </div>
+        </div>
     )
 };
 export default SearchBar;
