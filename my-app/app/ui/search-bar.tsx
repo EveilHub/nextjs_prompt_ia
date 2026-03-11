@@ -11,12 +11,8 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     const [words, setWords] = useState<string[]>([]);
     const [error, setError] = useState<string | undefined>(undefined);
 
-    // Stocke les traductions pour éviter plusieurs appels
     const [translations, setTranslations] = useState<{ [key: string]: string }>({});
-    
-    console.log(translations);
 
-    // Fonction pour traduire un texte via LibreTranslate
     const translateText = async (text: string, targetLang: string = "en") => {
         try {
             const res = await fetch("/api/translate", {
@@ -47,7 +43,6 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
         };
     };
 
-    // Traduire tous les mots qui ne sont pas dans pages
     useEffect(() => {
         const translateWords = async () => {
             for (const link of words) {
@@ -98,7 +93,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
             </form>
 
             <div className="flex flex-col items-center justify-center w-1/2 h-auto mt-10 pt-10 pb-5 
-                bg-slate-700/70 border border-slate-500 rounded-lg">
+                bg-slate-800/80 border border-slate-500 rounded-lg">
                 
                 {words.slice(0).reverse().map((link: string, index: number) => (
                     <div key={index} className="text-slate-100 mb-4">

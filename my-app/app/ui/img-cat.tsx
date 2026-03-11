@@ -67,6 +67,7 @@ const ImgCat = (): JSX.Element => {
                         width={250}
                         height={250}
                         loading="eager"
+                        className="w-auto h-auto"
                         alt="random cat"
                         unoptimized
                     />
