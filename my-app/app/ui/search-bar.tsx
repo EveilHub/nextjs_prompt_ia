@@ -9,6 +9,11 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
 
     const [word, setWord] = useState<string>("");
     const [words, setWords] = useState<string[]>([]);
+
+    const [file, setFile] = useState<File | null>(null);
+    const [text, setText] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const [error, setError] = useState<string | undefined>(undefined);
 
     const [translations, setTranslations] = useState<{ [key: string]: string }>({});
@@ -33,6 +38,35 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
         setWord(value);
     };
 
+    // Loading FILE
+    const handleUpload = async (): Promise<void> => {
+        if (!file) return;
+
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+        const res = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || "Upload failed");
+        }
+
+        const data = await res.json();
+            setText(data.text);
+        } catch (err: any) {
+            console.error(err);
+            alert(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSubmit = (e: SubmitEvent<HTMLFormElement>): void | JSX.Element => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -44,7 +78,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     };
 
     useEffect(() => {
-        const translateWords = async () => {
+        const translateWords = async (): Promise<void> => {
             for (const link of words) {
                 if (pages.includes(link)) continue;
                 if (translations[link]) continue;
@@ -59,16 +93,18 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     }, [words]);
 
     if (error) {
-        return (<>
-            <p style={{color: "red"}}>{error}</p>
-            <button 
-                type="button" 
-                onClick={() => setError("")} 
-                className="bg-blue-500 mx-4 rounded-md hover:bg-blue-600 active:bg-blue-400 mx-4 px-4 py-2"
-            >
-                Refresh
-            </button>
-        </>);
+        return (
+            <>
+                <p style={{color: "red"}}>{error}</p>
+                <button 
+                    type="button" 
+                    onClick={() => setError("")} 
+                    className="bg-blue-500 mx-4 rounded-md hover:bg-blue-600 active:bg-blue-400 mx-4 px-4 py-2"
+                >
+                    Refresh
+                </button>
+            </>
+        );
     };
 
     return (
@@ -91,6 +127,11 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
                 </button>
 
             </form>
+
+            {/* Loading FILE */}
+            <button type="button" onClick={handleUpload} disabled={!file || loading}>
+                {loading ? "Scanning..." : "Upload & Scan"}
+            </button>
 
             <div className="flex flex-col items-center justify-center w-1/2 h-auto mt-10 pt-10 pb-5 
                 bg-slate-800/80 border border-slate-500 rounded-lg">
