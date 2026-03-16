@@ -1,3 +1,5 @@
+import { ChangeEvent, SubmitEvent } from "react";
+
 export type GalaxyProps = {
     focal?: [number, number];
     rotation?: [number, number];
@@ -15,4 +17,12 @@ export type GalaxyProps = {
     repulsionStrength?: number;
     autoCenterRepulsion?: number;
     transparent?: boolean;
-}
+};
+
+export type PropsTranslate = {
+    name?: string;
+    value: string;
+    placeholder: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onSubmit: (e: SubmitEvent<HTMLFormElement>) => void;
+};
