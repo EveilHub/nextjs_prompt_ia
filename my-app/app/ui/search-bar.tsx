@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitEvent, JSX, useState, ChangeEvent, useEffect } from "react";
+import { SubmitEvent, JSX, useState, ChangeEvent, useEffect, SyntheticEvent } from "react";
 import Link from "next/link";
 
 const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
@@ -39,13 +39,13 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
     };
 
     // Loading FILE
-    const handleUpload = async (): Promise<void> => {
+    const handleUpload = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
+        e.preventDefault();
+        console.log("Clicked !");
         if (!file) return;
-
         setLoading(true);
         const formData = new FormData();
         formData.append("file", file);
-
         try {
         const res = await fetch("/api/upload", {
             method: "POST",
@@ -129,11 +129,13 @@ const SearchBar = ({ placeholder }: { placeholder: string }): JSX.Element => {
             </form>
 
             {/* Loading FILE */}
-            <button type="button" onClick={handleUpload} disabled={!file || loading}>
-                {loading ? "Scanning..." : "Upload & Scan"}
-            </button>
+            <form onSubmit={(e) => handleUpload(e)} className="mt-4">
+                <button type="submit" disabled={!file || loading} className="bg-blue-500 px-4 py-2 rounded cursor-pointer">
+                    {loading ? "Scanning..." : "Upload & Scan File"}
+                </button>
+            </form>
 
-            <div className="flex flex-col items-center justify-center w-1/2 h-auto mt-10 pt-10 pb-5 
+            <div className="flex flex-col items-center justify-center w-1/2 h-auto mt-4 pt-10 pb-5 
                 bg-slate-800/80 border border-slate-500 rounded-lg">
                 
                 {words.slice(0).reverse().map((link: string, index: number) => (
