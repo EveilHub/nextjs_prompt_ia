@@ -1,5 +1,6 @@
 "use client";
 
+import { TranslationType, WordsType, WordType } from "@/lib/type";
 import { SubmitEvent, JSX, useState, ChangeEvent, useEffect, SyntheticEvent } from "react";
 import Link from "next/link";
 import FormTranslateEnglish from "./FormTranslate/FormTranslate_en";
@@ -11,32 +12,38 @@ const SearchBar = (): JSX.Element => {
 
     const pages: string[] = ["home", "images", "search", "contact"];
 
-    const [wordEn, setWordEn] = useState<string>("");
-    const [wordEs, setWordEs] = useState<string>("");
-    const [wordDe, setWordDe] = useState<string>("");
-    const [wordZh, setWordZh] = useState<string>("");
+    const [searchWord, setSearchWord] = useState<WordType>({
+        wordEn: "",
+        wordEs: "",
+        wordDe: "",
+        wordZh: ""
+    });
 
-    const [wordsEn, setWordsEn] = useState<string[]>([]);
-    const [wordsEs, setWordsEs] = useState<string[]>([]);
-    const [wordsDe, setWordsDe] = useState<string[]>([]);
-    const [wordsZh, setWordsZh] = useState<string[]>([]);
+    const [searchWords, setSearchWords] = useState<WordsType>({
+        wordsEn: [],
+        wordsEs: [],
+        wordsDe: [],
+        wordsZh: []
+    });
 
-    const [translationsEn, setTranslationsEn] = useState<{ [key: string]: string }>({});
-    const [translationsEs, setTranslationsEs] = useState<{ [key: string]: string }>({});
-    const [translationsDe, setTranslationsDe] = useState<{ [key: string]: string }>({});
-    const [translationsZh, setTranslationsZh] = useState<{ [key: string]: string }>({});
+    const [translate, setTranslate] = useState<TranslationType>({
+        translationsEn: {},
+        translationsEs: {},
+        translationsDe: {},
+        translationsZh: {}
+    });
 
-    // A revoir !!!
-    const [file, setFile] = useState<File | null>(null);
-    const [text, setText] = useState<string | null>(null);
-
-    const [loading, setLoading] = useState<boolean>(false);
-
-    const [error, setError] = useState<string | undefined>(undefined);
-
-    const translateText_en = async (text: string, targetLang: string = "en") => {
+    // Reusable API call translation
+    const translateText = async (text: string, targetLang: "en" | "es" | "de" | "zh" = "en" ) => {
         try {
-            const res = await fetch("/api/translate/english", {
+            let lang = "";
+
+            targetLang === "en" ? lang = "english" : "";
+            targetLang === "es" ? lang = "spanish" : "";
+            targetLang === "de" ? lang = "german" : "";
+            targetLang === "zh" ? lang = "chinese" : "";
+
+            const res = await fetch(`/api/translate/${lang}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text, targetLang }),
@@ -49,217 +56,150 @@ const SearchBar = (): JSX.Element => {
         }
     };
 
-    const translateText_es = async (text: string, targetLang: string = "es") => {
-        try {
-            const res = await fetch("/api/translate/spanish", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text, targetLang }),
-            });
-            const data = await res.json();
-            return data.translation || text;
-        } catch (err) {
-            console.error("Translation error:", err);
-        return text;
-        }
-    };
-
-    const translateText_de = async (text: string, targetLang: string = "de") => {
-        try {
-            const res = await fetch("/api/translate/german", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text, targetLang }),
-            });
-            const data = await res.json();
-            return data.translation || text;
-        } catch (err) {
-            console.error("Translation error:", err);
-        return text;
-        }
-    };
-
-    const translateText_zh = async (text: string, targetLang: string = "zh") => {
-        try {
-            const res = await fetch("/api/translate/chinese", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text, targetLang }),
-            });
-            const data = await res.json();
-            return data.translation || text;
-        } catch (err) {
-            console.error("Translation error:", err);
-        return text;
-        }
-    };
-
-
-    const handleSearchEn = (e: ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
-        setWordEn(value);
-    };
-
-    const handleSearchEs = (e: ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
-        setWordEs(value);
-    };
-
-    const handleSearchDe = (e: ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
-        setWordDe(value);
-    };
-
-    const handleSearchZh = (e: ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
-        setWordZh(value);
-    };
-
-    // Loading FILE
-    const handleUpload = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
-        e.preventDefault();
-        console.log("Clicked !");
-        if (!file) return;
-        setLoading(true);
-        const formData = new FormData();
-        formData.append("file", file);
-        try {
-        const res = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-        });
-
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error || "Upload failed");
-        }
-
-        const data = await res.json();
-            setText(data.text);
-        } catch (err: any) {
-            console.error(err);
-            alert(err.message);
-        } finally {
-            setLoading(false);
-        }
+    // Reusable onChange
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setSearchWord((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     const handleSubmitEn = (e: SubmitEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const value = formData.get("query");
+        const value = formData.get("wordEn");
         if (value) {
-            setWordsEn((prev: string[]) => [...prev, String(value)]);
-            setWordEn("");
+            setSearchWords((prev: WordsType) => ({
+                ...prev, 
+                wordsEn: [...prev.wordsEn, String(value)]
+            }));
+            setSearchWord((prev: WordType) => ({
+                ...prev, 
+                wordEn: "" 
+            }));
         };
     };
 
     const handleSubmitEs = (e: SubmitEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const value = formData.get("spain");
+        const value = formData.get("wordEs");
         if (value) {
-            setWordsEs((prev: string[]) => [...prev, String(value)]);
-            setWordEs("");
+            setSearchWords((prev: WordsType) => ({
+                ...prev, 
+                wordsEs: [...prev.wordsEs, String(value)]
+            }));
+            setSearchWord((prev: WordType) => ({
+                ...prev, 
+                wordEs: "" 
+            }));
         };
     };
 
     const handleSubmitDe = (e: SubmitEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const value = formData.get("german");
+        const value = formData.get("wordDe");
         if (value) {
-            setWordsDe((prev: string[]) => [...prev, String(value)]);
-            setWordDe("");
+            setSearchWords((prev: WordsType) => ({
+                ...prev, 
+                wordsDe: [...prev.wordsDe, String(value)]
+            }));
+            setSearchWord((prev: WordType) => ({
+                ...prev, 
+                wordDe: "" 
+            }));
         };
     };
-
 
     const handleSubmitZh = (e: SubmitEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const value = formData.get("chinese");
+        const value = formData.get("wordZh");
         if (value) {
-            setWordsZh((prev: string[]) => [...prev, String(value)]);
-            setWordZh("");
+            setSearchWords((prev: WordsType) => ({
+                ...prev, 
+                wordsZh: [...prev.wordsZh, String(value)]
+            }));
+            setSearchWord((prev: WordType) => ({
+                ...prev, 
+                wordZh: "" 
+            }));
         };
     };
 
     useEffect(() => {
         const translateWordsEn = async (): Promise<void> => {
-            for (const link of wordsEn) {
+            for (const link of searchWords.wordsEn) {
                 if (pages.includes(link)) continue;
-                if (translationsEn[link]) continue;
-                const translated = await translateText_en(link, "en");
-                setTranslationsEn(prev => ({
+                if (translate.translationsEn[link]) continue;
+                const translated = await translateText(link, "en");
+                setTranslate(prev => ({
                     ...prev,
-                    [link]: translated
+                    translationsEn: {
+                        ...prev.translationsEn,
+                        [link]: translated
+                    }
                 }));
             }
         };
         translateWordsEn();
-    }, [wordsEn]);
+    }, [searchWords.wordsEn]);
 
     useEffect(() => {
         const translateWordsEs = async (): Promise<void> => {
-            for (const link of wordsEs) {
+            for (const link of searchWords.wordsEs) {
                 if (pages.includes(link)) continue;
-                if (translationsEs[link]) continue;
-                const translated = await translateText_es(link, "es");
-                setTranslationsEs(prev => ({
+                if (translate.translationsEs[link]) continue;
+                const translated = await translateText(link, "es");
+                setTranslate(prev => ({
                     ...prev,
-                    [link]: translated
+                    translationsEs: {
+                        ...prev.translationsEs,
+                        [link]: translated
+                    }
                 }));
             }
         };
         translateWordsEs();
-    }, [wordsEs]);
+    }, [searchWords.wordsEs]);
 
     useEffect(() => {
         const translateWordsDe = async (): Promise<void> => {
-            for (const link of wordsDe) {
+            for (const link of searchWords.wordsDe) {
                 if (pages.includes(link)) continue;
-                if (translationsDe[link]) continue;
-                const translated = await translateText_de(link, "de");
-                setTranslationsDe(prev => ({
+                if (translate.translationsDe[link]) continue;
+                const translated = await translateText(link, "de");
+                setTranslate(prev => ({
                     ...prev,
-                    [link]: translated
+                    translationsDe: {
+                        ...prev.translationsDe,
+                        [link]: translated
+                    }
                 }));
             }
         };
         translateWordsDe();
-    }, [wordsDe]);
-
+    }, [searchWords.wordsDe]);
 
     useEffect(() => {
         const translateWordsZh = async (): Promise<void> => {
-            for (const link of wordsZh) {
+            for (const link of searchWords.wordsZh) {
                 if (pages.includes(link)) continue;
-                if (translationsZh[link]) continue;
-                const translated = await translateText_zh(link, "zh");
-                setTranslationsZh(prev => ({
+                if (translate.translationsZh[link]) continue;
+                const translated = await translateText(link, "zh");
+                setTranslate(prev => ({
                     ...prev,
-                    [link]: translated
+                    translationsZh: {
+                        ...prev.translationsZh,
+                        [link]: translated
+                    }
                 }));
             }
         };
         translateWordsZh();
-    }, [wordsZh]);
-
-    if (error) {
-        return (
-            <>
-                <p style={{color: "red"}}>{error}</p>
-                <button 
-                    type="button" 
-                    onClick={() => setError("")} 
-                    className="bg-blue-500 mx-4 rounded-md hover:bg-blue-600 active:bg-blue-400 mx-4 px-4 py-2"
-                >
-                    Refresh
-                </button>
-            </>
-        );
-    };
+    }, [searchWords.wordsZh]);
 
     return (
         <div className="flex flex-col items-center w-full">
@@ -267,113 +207,101 @@ const SearchBar = (): JSX.Element => {
             {/* Translate word & sentences in EN */}
             <h3>FR to EN</h3>
             <FormTranslateEnglish
-                name={"query"}
-                value={wordEn}
+                name={"wordEn"}
+                value={searchWord.wordEn}
                 placeholder={"Fr => En"}
-                onChange={handleSearchEn}
+                onChange={handleSearch}
                 onSubmit={(e) => handleSubmitEn(e)}
             />
 
             {/* Translate word & sentences in ES */}
             <h3>FR to ES</h3>
             <FormTranslateSpanish
-                name={"spain"}
-                value={wordEs}
+                name={"wordEs"}
+                value={searchWord.wordEs}
                 placeholder={"Fr => Es"}
-                onChange={handleSearchEs}
+                onChange={handleSearch}
                 onSubmit={(e) => handleSubmitEs(e)}
             />
 
-            {/* Translate word & sentences in ES */}
+            {/* Translate word & sentences in DE */}
             <h3>FR to DE</h3>
             <FormTranslateGerman
-                name={"german"}
-                value={wordDe}
+                name={"wordDe"}
+                value={searchWord.wordDe}
                 placeholder={"Fr => De"}
-                onChange={handleSearchDe}
+                onChange={handleSearch}
                 onSubmit={(e) => handleSubmitDe(e)}
             />
 
-            {/* Translate word & sentences in ES */}
+            {/* Translate word & sentences in ZH */}
             <h3>FR to ZH</h3>
             <FormTranslateChinese
-                name={"chinese"}
-                value={wordZh}
+                name={"wordZh"}
+                value={searchWord.wordZh}
                 placeholder={"Fr => Zh"}
-                onChange={handleSearchZh}
+                onChange={handleSearch}
                 onSubmit={(e) => handleSubmitZh(e)}
             />
-
-
-            {/* Loading FILE */}
-            <form onSubmit={(e) => handleUpload(e)} className="mt-4">
-
-                <button type="submit" disabled={!file || loading} className="bg-blue-500 px-4 py-2 rounded cursor-pointer">
-                    {loading ? "Scanning..." : "Upload & Scan File"}
-                </button>
-
-            </form>
 
             <div className="flex flex-col items-center justify-center w-1/2 h-auto mt-4 pt-10 pb-5 
                 bg-slate-800/80 border border-slate-500 rounded-lg">
                 
-                {wordsEn.slice(0).reverse().map((link: string, index: number) => (
+                {[...searchWords.wordsEn].slice(0).reverse().map((link: string, index: number) => (
                     <div key={index} className="text-slate-100 mb-4">
 
                         {pages.includes(link) ? (
                             <Link href={link}>{link}</Link>
                         ) : (
                             <>
-                                <p>{translationsEn[link] ?? "translating..."} - {link}</p>
+                                <p>{translate.translationsEn[link] ?? "translation..."} - {link}</p>
                             </>
                         )}
                         
                     </div>
                 ))}
 
-                {wordsEs.slice(0).reverse().map((link: string, index: number) => (
+                {[...searchWords.wordsEs].slice(0).reverse().map((link: string, index: number) => (
                     <div key={index} className="text-slate-100 mb-4">
 
                         {pages.includes(link) ? (
                             <Link href={link}>{link}</Link>
                         ) : (
                             <>
-                                <p>{translationsEs[link] ?? "traducción..."} - {link}</p>
+                                <p>{translate.translationsEs[link] ?? "traducción..."} - {link}</p>
                             </>
                         )}
                         
                     </div>
                 ))}
 
-                {wordsDe.slice(0).reverse().map((link: string, index: number) => (
+                {[...searchWords.wordsDe].slice(0).reverse().map((link: string, index: number) => (
                     <div key={index} className="text-slate-100 mb-4">
 
                         {pages.includes(link) ? (
                             <Link href={link}>{link}</Link>
                         ) : (
                             <>
-                                <p>{translationsDe[link] ?? "Übersetzung..."} - {link}</p>
+                                <p>{translate.translationsDe[link] ?? "Übersetzung..."} - {link}</p>
                             </>
                         )}
                         
                     </div>
                 ))}
 
-                {wordsZh.slice(0).reverse().map((link: string, index: number) => (
+                {[...searchWords.wordsZh].slice(0).reverse().map((link: string, index: number) => (
                     <div key={index} className="text-slate-100 mb-4">
 
                         {pages.includes(link) ? (
                             <Link href={link}>{link}</Link>
                         ) : (
                             <>
-                                <p>{translationsZh[link] ?? "Chine trad..."} - {link}</p>
+                                <p>{translate.translationsZh[link] ?? "Chine trad..."} - {link}</p>
                             </>
                         )}
                         
                     </div>
                 ))}
-
-
 
             </div>
         </div>
