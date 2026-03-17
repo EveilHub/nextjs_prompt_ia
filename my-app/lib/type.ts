@@ -19,6 +19,27 @@ export type GalaxyProps = {
     transparent?: boolean;
 };
 
+export type WordType = {
+    wordEn: string; 
+    wordEs: string; 
+    wordDe: string; 
+    wordZh: string;
+};
+
+export type WordsType = {
+    wordsEn: string[]; 
+    wordsEs: string[]; 
+    wordsDe: string[]; 
+    wordsZh: string[];
+};
+
+export type TranslationType = {
+    translationsEn: { [key: string]: string };
+    translationsEs: { [key: string]: string };
+    translationsDe: { [key: string]: string };
+    translationsZh: { [key: string]: string };
+};
+
 export type PropsTranslate = {
     name?: string;
     value: string;
