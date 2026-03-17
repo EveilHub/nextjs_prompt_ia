@@ -3,6 +3,87 @@
 
 https://icon-icons.com/search?q=flag+spain
 
+    // const [wordEn, setWordEn] = useState<string>("");
+    // const [wordEs, setWordEs] = useState<string>("");
+    // const [wordDe, setWordDe] = useState<string>("");
+    // const [wordZh, setWordZh] = useState<string>("");
+
+    // const [wordsEn, setWordsEn] = useState<string[]>([]);
+    // const [wordsEs, setWordsEs] = useState<string[]>([]);
+    // const [wordsDe, setWordsDe] = useState<string[]>([]);
+    // const [wordsZh, setWordsZh] = useState<string[]>([]);
+
+    // const [translationsEn, setTranslationsEn] = useState<{ [key: string]: string }>({});
+    // const [translationsEs, setTranslationsEs] = useState<{ [key: string]: string }>({});
+    // const [translationsDe, setTranslationsDe] = useState<{ [key: string]: string }>({});
+    // const [translationsZh, setTranslationsZh] = useState<{ [key: string]: string }>({});
+
+    // const translateText_es = async (text: string, targetLang: string = "es") => {
+    //     try {
+    //         const res = await fetch("/api/translate/spanish", {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ text, targetLang }),
+    //         });
+    //         const data = await res.json();
+    //         return data.translation || text;
+    //     } catch (err) {
+    //         console.error("Translation error:", err);
+    //     return text;
+    //     }
+    // };
+
+    // const translateText_de = async (text: string, targetLang: string = "de") => {
+    //     try {
+    //         const res = await fetch("/api/translate/german", {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ text, targetLang }),
+    //         });
+    //         const data = await res.json();
+    //         return data.translation || text;
+    //     } catch (err) {
+    //         console.error("Translation error:", err);
+    //     return text;
+    //     }
+    // };
+
+    // const translateText_zh = async (text: string, targetLang: string = "zh") => {
+    //     try {
+    //         const res = await fetch("/api/translate/chinese", {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ text, targetLang }),
+    //         });
+    //         const data = await res.json();
+    //         return data.translation || text;
+    //     } catch (err) {
+    //         console.error("Translation error:", err);
+    //     return text;
+    //     }
+    // };
+
+
+    // const handleSearchEn = (e: ChangeEvent<HTMLInputElement>) => {
+    //     let value = e.target.value;
+    //     setWordEn(value);
+    // };
+
+    // const handleSearchEs = (e: ChangeEvent<HTMLInputElement>) => {
+    //     let value = e.target.value;
+    //     setWordEs(value);
+    // };
+
+    // const handleSearchDe = (e: ChangeEvent<HTMLInputElement>) => {
+    //     let value = e.target.value;
+    //     setWordDe(value);
+    // };
+
+    // const handleSearchZh = (e: ChangeEvent<HTMLInputElement>) => {
+    //     let value = e.target.value;
+    //     setWordZh(value);
+    // };
+
 ## Getting Started
 
 First, run the development server:
