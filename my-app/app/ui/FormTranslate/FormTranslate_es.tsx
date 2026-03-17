@@ -1,5 +1,6 @@
 import { PropsTranslate } from "@/lib/type";
 import { JSX } from "react";
+import Image from "next/image";
 
 const FormTranslateSpanish = (
     {
@@ -21,9 +22,9 @@ const FormTranslateSpanish = (
                 onChange={onChange}
             />
             
-            <button type="submit" className="w-[10%] font-bold bg-blue-500 rounded-md 
+            <button type="submit" className="flex items-center justify-center w-[10%] font-bold bg-blue-500 rounded-md 
                 hover:bg-blue-600 active:bg-blue-400 ml-4">
-                Enter
+                <span><Image src={"/images/flags/spain.png"} width={24} height={24} alt="spain logo" /></span>
             </button>
 
         </form>

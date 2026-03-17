@@ -1,8 +1,6 @@
-"use client";
-
 import { PropsTranslate } from "@/lib/type";
 import { JSX } from "react";
-
+import Image from "next/image";
 
 const FormTranslateGerman = (
     {
@@ -24,9 +22,9 @@ const FormTranslateGerman = (
                 onChange={onChange}
             />
             
-            <button type="submit" className="w-[10%] font-bold bg-blue-500 rounded-md 
+            <button type="submit" className="flex items-center justify-center w-[10%] font-bold bg-blue-500 rounded-md 
                 hover:bg-blue-600 active:bg-blue-400 ml-4">
-                DE
+                <span><Image src={"/images/flags/germany.png"} width={24} height={24} alt="germany logo" /></span>
             </button>
 
         </form>
