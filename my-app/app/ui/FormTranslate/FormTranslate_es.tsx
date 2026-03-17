@@ -24,7 +24,7 @@ const FormTranslateSpanish = (
             
             <button type="submit" className="flex items-center justify-center w-[10%] font-bold bg-blue-500 rounded-md 
                 hover:bg-blue-600 active:bg-blue-400 ml-4">
-                <span><Image src={"/images/flags/spain.png"} width={24} height={24} alt="spain logo" /></span>
+                <span><Image src={"/images/flags/spain.png"} width={32} height={32} alt="spain logo" /></span>
             </button>
 
         </form>
