@@ -3,6 +3,7 @@
 import { JSX, SyntheticEvent, useState } from "react";
 
 const TranslateFilePage = (): JSX.Element => {
+
   const [file, setFile] = useState<File | null>(null);
   const [originalText, setOriginalText] = useState<string | null>(null);
   const [translatedText, setTranslatedText] = useState<string | null>(null);
@@ -10,7 +11,7 @@ const TranslateFilePage = (): JSX.Element => {
   const [error, setError] = useState<string | undefined>(undefined);
 
   // Upload et extraction de texte
-  const handleUpload = async (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleUpload = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!file) return;
 
@@ -22,30 +23,33 @@ const TranslateFilePage = (): JSX.Element => {
 
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const textOrHtml = await res.text();
+      const textOrHtml: string = await res.text();
 
       if (!res.ok) {
         try {
-          const err = JSON.parse(textOrHtml);
-          throw new Error(err.error || "Upload failed");
+            const err = JSON.parse(textOrHtml) as { error?: string };
+            throw new Error(err.error ?? "Upload failed");
         } catch {
-          throw new Error(`Upload failed: ${textOrHtml}`);
+            throw new Error(`Upload failed: ${textOrHtml}`);
         }
       }
 
       const data = JSON.parse(textOrHtml);
       setOriginalText(data.text);
       setTranslatedText(null);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+          setError(err.message);
+      } else {
+          setError("Une erreur inconnue est survenue");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   // Traduction via MyMemory
-  const handleTranslate = async () => {
+  const handleTranslate = async (): Promise<void> => {
     if (!originalText) return;
 
     setLoading(true);
@@ -58,7 +62,7 @@ const TranslateFilePage = (): JSX.Element => {
         body: JSON.stringify({ text: originalText }),
       });
 
-      const textOrHtml = await res.text();
+      const textOrHtml: string = await res.text();
 
       if (!res.ok) {
         try {
@@ -71,9 +75,12 @@ const TranslateFilePage = (): JSX.Element => {
 
       const data = JSON.parse(textOrHtml);
       setTranslatedText(data.translatedText);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+          setError(err.message);
+      } else {
+          setError("Une erreur inconnue est survenue");
+      }
     } finally {
       setLoading(false);
     }
@@ -82,20 +89,25 @@ const TranslateFilePage = (): JSX.Element => {
   return (
     <div className="w-full flex flex-col items-center justify-center mt-4">
       <form onSubmit={handleUpload} className="w-full flex flex-col items-center">
-        <input
-          type="file"
-          onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              setFile(e.target.files[0]);
-            }
-          }}
-          className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer my-4"
-        />
+
+        <div className="w-[380px] flex flex-row items-center justify-between">
+          <input
+            type="file"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setFile(e.target.files[0]);
+              }
+            }}
+            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer my-4 ml-6"
+          />
+
+          <div className="ml-4">{file ? (<span>✅</span>) : (<span>❌</span>)}</div>
+        </div>
 
         <button
           type="submit"
           disabled={!file || loading}
-          className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer"
+          className={`bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer`}
         >
           {loading ? "Scanning..." : "Upload & Extract Text"}
         </button>
@@ -104,7 +116,7 @@ const TranslateFilePage = (): JSX.Element => {
       {originalText && (
         <>
           <div className="mt-4 p-2 border rounded bg-fuchsia-100 text-slate-600/70 w-[80%]">
-            <h3 className="w-full font-bold">Original Text:</h3>
+            <h3 className="font-bold text-red-400 mb-4">Original Text:</h3>
             <pre>{originalText}</pre>
           </div>
 
@@ -121,7 +133,7 @@ const TranslateFilePage = (): JSX.Element => {
 
       {translatedText && (
         <div className="mt-4 p-2 border rounded bg-green-100 text-slate-600/70 w-[80%]">
-          <h3 className="font-bold">Translated Text:</h3>
+          <h3 className="font-bold text-red-400 mb-4">Translated Text:</h3>
           <pre>{translatedText}</pre>
         </div>
       )}

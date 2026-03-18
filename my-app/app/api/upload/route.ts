@@ -5,12 +5,12 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request): Promise<Response> {
     const formData = await req.formData();
-    const file = formData.get("file") as File | null;
+    const file: File | null = formData.get("file") as File | null;
 
     if (!file) return new Response(JSON.stringify({ error: "No file uploaded" }), { status: 400 });
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    let text = "";
+    let text: string = "";
 
     try {
         if (file.type === "application/pdf") {
@@ -22,19 +22,21 @@ export async function POST(req: Request): Promise<Response> {
         } else {
             return new Response(JSON.stringify({ error: "Unsupported file type" }), { status: 400 });
         }
-    } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message || "Error parsing file" }), { status: 500, headers: { "Content-Type": "application/json" } });
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            return new Response(JSON.stringify({ error: err.message || "Error parsing file" }), { status: 500, headers: { "Content-Type": "application/json" } });
+        } 
+        return new Response(JSON.stringify({ error: "Error Unknown"}));
     }
-
     return new Response(JSON.stringify({ text }), { status: 200, headers: { "Content-Type": "application/json" } });
 }
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
-    const data = await (pdfParse as any)(buffer); // ⚠️ pdf-parse v2 ESM
+    const data: {text: string} = await (pdfParse as any)(buffer);
     return data.text;
 }
 
 async function extractDocxText(buffer: Buffer): Promise<string> {
-    const result = await mammoth.extractRawText({ buffer });
+    const result: {value: string} = await mammoth.extractRawText({ buffer });
     return result.value;
 }
