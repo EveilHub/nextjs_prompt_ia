@@ -104,13 +104,13 @@ const TranslateFilePage = (): JSX.Element => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-6xl mx-auto px-4">
+      {/* Header */}
+      <h1 className="text-3xl font-bold py-8 text-center">Translate File</h1>
 
-      <h1 className="flex justify-between text-3xl font-bold p-10">Translate File</h1>
-
-      <form onSubmit={handleUpload} className="w-full flex flex-col items-center">
-
-        <div className="w-[380px] flex flex-row items-center justify-center">
+      {/* Upload Section */}
+      <form onSubmit={handleUpload} className="flex flex-col items-center mb-8">
+        <div className="flex items-center gap-3 mb-4">
           <input
             type="file"
             onChange={(e) => {
@@ -118,101 +118,99 @@ const TranslateFilePage = (): JSX.Element => {
                 setFile(e.target.files[0]);
               }
             }}
-            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer -mt-28 mb-6"
+            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer text-white"
           />
-
-          <div className="-mt-34 ml-2">{file ? (<span style={{fontSize: "1.8rem"}}>✅</span>) : (null)}</div>
+          {file && <span className="text-3xl">✅</span>}
         </div>
 
-        {file ? (
+        {file && (
           <button
             type="submit"
             disabled={!file || loading}
-            className={`bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer`}
+            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer text-white disabled:opacity-50"
           >
             {loading ? "Scanning..." : "Upload & Extract Text"}
           </button>
-        ):(
-          null
         )}
       </form>
 
-      <div className={`${translatedText ? "w-full justify-around" : "w-[50%] justify-between"} absolute flex flex-row items-center mt-10 border border-orange-400`}>
-
-        {originalText && (
-          <>
-            <div className="w-[40%] flex flex-row">
-              <div className="w-full p-2 border rounded bg-blue-100 text-slate-600/70">
+      {/* Translation Section */}
+      {(originalText || translatedText) && (
+        <div className="flex flex-col lg:flex-row gap-6 mt-8">
+          
+          {/* Original Text Column */}
+          {originalText && (
+            <div className="flex-1 min-w-0">
+              <div className="bg-blue-100 rounded-lg p-4 h-full">
                 <h3 className="font-bold text-red-500 mb-4">Original Text:</h3>
-                <pre>{originalText}</pre>
+                <pre className="whitespace-pre-wrap break-words text-slate-600/70 font-sans">
+                  {originalText}
+                </pre>
               </div>
             </div>
+          )}
 
-            <div className="flex flex-col items-center justify-center">
-              <select 
-                id="optionLang"
-                name="lang"
+          {/* Controls Column - Only show when original text exists */}
+          {originalText && (
+            <div className="lg:w-48 flex flex-col items-center justify-evenly gap-4 border">
+              <select
                 value={chooseLang}
-                onChange={(e) => handleLang(e)}
-                style={{fontSize: "2rem"}}
-                className="mt-4"
+                onChange={handleLang}
+                className="text-4xl p-2 rounded bg-slate-950 cursor-pointer w-full text-center"
               >
-                
-                <option value="FR" style={{fontSize: "2rem"}}>🇫🇷</option>
-                <option value="NL" style={{fontSize: "2rem"}}>🇳🇱</option>
-
-                <option value="DE" style={{fontSize: "2rem"}}>🇩🇪</option>
-                <option value="ES" style={{fontSize: "2rem"}}>🇪🇸</option>
-
-                <option value="SV" style={{fontSize: "2rem"}}>🇸🇪</option>
-                <option value="NO" style={{fontSize: "2rem"}}>🇳🇴</option>
-
-                <option value="EN" style={{fontSize: "2rem"}}>🇺🇸</option>
-
-                <option value="SK" style={{fontSize: "2rem"}}>🇸🇰</option>
-                <option value="CS" style={{fontSize: "2rem"}}>🇨🇿</option>
-
-                <option value="AR" style={{fontSize: "2rem"}}>🇦🇪</option>
-                <option value="ZH" style={{fontSize: "2rem"}}>🇨🇳</option>
-                <option value="JA" style={{fontSize: "2rem"}}>🇯🇵</option>
-
+                <option value="FR">🇫🇷</option>
+                <option value="NL">🇳🇱</option>
+                <option value="DE">🇩🇪</option>
+                <option value="ES">🇪🇸</option>
+                <option value="SV">🇸🇪</option>
+                <option value="NO">🇳🇴</option>
+                <option value="EN">🇺🇸</option>
+                <option value="SK">🇸🇰</option>
+                <option value="CS">🇨🇿</option>
+                <option value="AR">🇦🇪</option>
+                <option value="ZH">🇨🇳</option>
+                <option value="JA">🇯🇵</option>
               </select>
 
               <button
                 type="button"
                 onClick={handleTranslate}
                 disabled={loading}
-                className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-4 py-2 rounded mt-4"
+                className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-6 py-2 rounded text-white disabled:opacity-50 whitespace-nowrap"
               >
                 {loading ? "Translating..." : "Translate"}
               </button>
             </div>
-          </>
-        )}
+          )}
 
+          {/* Translated Text Column */}
           {translatedText && (
-            <div className="w-[40%] flex flex-col items-center justify-center">
-              <div className="w-full p-2 border rounded bg-green-100 text-slate-600/70">
+            <div className="flex-1 min-w-0">
+              <div className="bg-green-100 rounded-lg p-4 h-full">
                 <h3 className="font-bold text-red-500 mb-4">Translated Text:</h3>
-                <pre>{translatedText}</pre>
+                <pre className="whitespace-pre-wrap break-words text-slate-600/70 font-sans">
+                  {translatedText}
+                </pre>
               </div>
-
-              <div className="relative w-full flex justify-center">
+              
+              {/* Download Button */}
+              <div className="flex justify-center mt-4">
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="absolute bg-green-600 hover:bg-green-700 active:bg-green-500 px-4 py-2 rounded mt-4"
+                  className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-6 py-2 rounded text-white"
                 >
                   Download
                 </button>
               </div>
             </div>
           )}
+        </div>
+      )}
 
-      </div>
-
+      {/* Error Message */}
       {error && (
-        <p style={{ color: "red" }} className="mx-2 mt-2">{error}</p>
+        <p className="text-red-500 mt-4 text-center">{error}</p>
       )}
     </div>
   );
