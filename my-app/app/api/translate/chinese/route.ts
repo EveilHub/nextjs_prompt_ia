@@ -5,7 +5,7 @@ export async function POST(req: Request) {
         const { text, targetLang } = await req.json();
 
         const response = await fetch(
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=fr|${targetLang || "zh"}`
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=fr|${targetLang || "zh-TW"}`
         );
 
         const data = await response.json();
