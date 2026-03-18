@@ -56,9 +56,6 @@ const TranslateFilePage = (): JSX.Element => {
     setChooseLang(value);
   };
 
-  console.log("!!! CHOOSE LANG !!!", chooseLang);
-
-
   // Traduction via MyMemory
   const handleTranslate = async (): Promise<void> => {
     if (!originalText) return;
