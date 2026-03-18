@@ -1,4 +1,3 @@
-// app/api/translatefile/route.ts
 export const runtime = "nodejs";
 
 export async function POST(req: Request): Promise<Response> {

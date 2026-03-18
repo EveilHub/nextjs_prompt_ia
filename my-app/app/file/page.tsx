@@ -1,11 +1,14 @@
 "use client";
 
-import { JSX, SyntheticEvent, useState } from "react";
+import { ChangeEvent, JSX, SyntheticEvent, useState } from "react";
 
 const TranslateFilePage = (): JSX.Element => {
 
   const [file, setFile] = useState<File | null>(null);
   const [originalText, setOriginalText] = useState<string | null>(null);
+
+  const [chooseLang, setChooseLang] = useState<string>("options1");
+
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -48,6 +51,19 @@ const TranslateFilePage = (): JSX.Element => {
     }
   };
 
+  // change lang
+  // const handleLang = (option: string): void => {
+  //   setChooseLang((prev: string) => prev = option);
+  // };
+
+  const handleLang = (e: ChangeEvent<HTMLSelectElement>): void => {
+    const value = e.target.value;
+    setChooseLang(value);
+  };
+
+  console.log("!!! CHOOSE LANG !!!", chooseLang);
+
+
   // Traduction via MyMemory
   const handleTranslate = async (): Promise<void> => {
     if (!originalText) return;
@@ -56,7 +72,7 @@ const TranslateFilePage = (): JSX.Element => {
     setError(undefined);
 
     try {
-      const res = await fetch("/api/translatefile", {
+      const res = await fetch(`/api/translatefile_${chooseLang}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: originalText }),
@@ -119,6 +135,19 @@ const TranslateFilePage = (): JSX.Element => {
             <h3 className="font-bold text-red-400 mb-4">Original Text:</h3>
             <pre>{originalText}</pre>
           </div>
+
+            <select 
+              id="optionLang"
+              name="lang"
+              value={chooseLang}
+              onChange={(e) => handleLang(e)}
+              className=""
+            >
+              <option value="FR">🇫🇷</option>
+              <option value="EN">🇺🇸</option>
+              <option value="DE">🇩🇪</option>
+              <option value="ES">🇪🇸</option>
+            </select>
 
           <button
             type="button"
