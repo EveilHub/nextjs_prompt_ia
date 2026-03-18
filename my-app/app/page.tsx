@@ -16,11 +16,16 @@ const Home = (): JSX.Element => {
         
         <div className="w-full h-[60vh] flex flex-col items-start justify-center">
 
-          <div className="w-2/5 h-3/5 flex flex-col items-start justify-center px-20 bg-gray-800/70 m-auto border border-slate-500 rounded-lg">
+          <div className="w-2/5 h-4/5 flex flex-col items-start justify-center px-20 bg-gray-800/70 m-auto border border-slate-500 rounded-lg">
 
             <li className="text-md text-slate-300 my-10">
-              <Link href="/search" className="text-lg font-bold text-cyan-400 hover:text-cyan-300 active:text-cyan-200">Search : </Link>
-              AI translatation
+              <Link href="/translation" className="text-lg font-bold text-cyan-400 hover:text-cyan-300 active:text-cyan-200">Simple Translate : </Link>
+              Translate words & sentences
+            </li>
+
+            <li className="text-md text-slate-300 my-10">
+              <Link href="/file" className="text-lg font-bold text-cyan-400 hover:text-cyan-300 active:text-cyan-200">Translate Doc : </Link>
+              Translate File
             </li>
 
             <li className="text-md text-slate-300 my-10">

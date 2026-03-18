@@ -90,7 +90,7 @@ const TranslateFilePage = (): JSX.Element => {
       }
 
       const data = JSON.parse(textOrHtml);
-      setTranslatedText(data.translatedText);
+      setTranslatedText(String(data.translatedText));
     } catch (err: unknown) {
       if (err instanceof Error) {
           setError(err.message);
@@ -114,7 +114,7 @@ const TranslateFilePage = (): JSX.Element => {
                 setFile(e.target.files[0]);
               }
             }}
-            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer my-4 ml-6"
+            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-400 px-4 py-2 rounded cursor-pointer my-4 border border-slate-500"
           />
 
           <div className="ml-4">{file ? (<span>✅</span>) : (<span>❌</span>)}</div>
@@ -131,7 +131,7 @@ const TranslateFilePage = (): JSX.Element => {
 
       {originalText && (
         <>
-          <div className="mt-4 p-2 border rounded bg-fuchsia-100 text-slate-600/70 w-[80%]">
+          <div className="w-[50%] mt-4 p-2 border rounded bg-fuchsia-100 text-slate-600/70">
             <h3 className="font-bold text-red-400 mb-4">Original Text:</h3>
             <pre>{originalText}</pre>
           </div>
@@ -141,12 +141,27 @@ const TranslateFilePage = (): JSX.Element => {
               name="lang"
               value={chooseLang}
               onChange={(e) => handleLang(e)}
-              className=""
+              style={{fontSize: "2rem"}}
+              className="mt-4"
             >
-              <option value="FR">🇫🇷</option>
-              <option value="EN">🇺🇸</option>
-              <option value="DE">🇩🇪</option>
-              <option value="ES">🇪🇸</option>
+              <option value="FR" style={{fontSize: "2rem"}}>🇫🇷</option>
+              <option value="NL" style={{fontSize: "2rem"}}>🇳🇱</option>
+
+              <option value="DE" style={{fontSize: "2rem"}}>🇩🇪</option>
+              <option value="ES" style={{fontSize: "2rem"}}>🇪🇸</option>
+
+              <option value="SV" style={{fontSize: "2rem"}}>🇸🇪</option>
+              <option value="NO" style={{fontSize: "2rem"}}>🇳🇴</option>
+
+              <option value="EN" style={{fontSize: "2rem"}}>🇺🇸</option>
+
+              <option value="SK" style={{fontSize: "2rem"}}>🇸🇰</option>
+              <option value="CS" style={{fontSize: "2rem"}}>🇨🇿</option>
+
+              <option value="AR" style={{fontSize: "2rem"}}>🇦🇪</option>
+              <option value="ZH" style={{fontSize: "2rem"}}>🇨🇳</option>
+              <option value="JA" style={{fontSize: "2rem"}}>🇯🇵</option>
+
             </select>
 
           <button
@@ -161,7 +176,7 @@ const TranslateFilePage = (): JSX.Element => {
       )}
 
       {translatedText && (
-        <div className="mt-4 p-2 border rounded bg-green-100 text-slate-600/70 w-[80%]">
+        <div className="w-[50%] mt-4 p-2 border rounded bg-green-100 text-slate-600/70">
           <h3 className="font-bold text-red-400 mb-4">Translated Text:</h3>
           <pre>{translatedText}</pre>
         </div>

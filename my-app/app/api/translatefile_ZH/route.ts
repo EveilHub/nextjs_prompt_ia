@@ -11,9 +11,9 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
-    // Appel API MyMemory pour traduction FR -> ES
+    // Appel API MyMemory pour traduction FR -> ZH (simplifié)
     const response = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=fr|es`
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=fr|zh-TW`
     );
 
     if (!response.ok) {
@@ -25,8 +25,19 @@ export async function POST(req: Request): Promise<Response> {
 
     const data = await response.json();
 
-    // MyMemory renvoie le texte traduit dans data.responseData.translatedText
-    const translatedText = data.responseData?.translatedText || "";
+    let translatedText = String(data.responseData?.translatedText) || "";
+
+    // Cherche la meilleure suggestion dans matches
+    if (data.matches && data.matches.length > 0) {
+      const bestMatch = data.matches.reduce((prev: {match: number}, curr: {match: number}) =>
+        curr.match > prev.match ? curr : prev
+      , { match: -1, translation: "" });
+
+      // Si la meilleure suggestion est assez fiable (>0.8), on l'utilise
+      if (bestMatch.match > 0.8) {
+        translatedText = bestMatch.translation;
+      }
+    }
 
     return new Response(
       JSON.stringify({ translatedText }),

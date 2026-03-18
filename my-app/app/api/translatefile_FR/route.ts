@@ -11,7 +11,7 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
-    // Appel API MyMemory pour traduction FR -> EN
+    // Appel API MyMemory pour traduction EN -> FR
     const response = await fetch(
       `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|fr`
     );
