@@ -74,7 +74,7 @@ const TranslateFilePage = (): JSX.Element => {
 
       if (!res.ok) {
         try {
-          const err = JSON.parse(textOrHtml);
+          const err = JSON.parse(textOrHtml) as {error: string};
           throw new Error(err.error || "Translation failed");
         } catch {
           throw new Error(`Translation failed: ${textOrHtml}`);
@@ -113,7 +113,7 @@ const TranslateFilePage = (): JSX.Element => {
         <div className="flex items-center gap-3 mb-4">
           <input
             type="file"
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               if (e.target.files && e.target.files[0]) {
                 setFile(e.target.files[0]);
               }
