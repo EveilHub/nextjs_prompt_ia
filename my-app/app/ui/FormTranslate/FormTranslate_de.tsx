@@ -23,7 +23,7 @@ const FormTranslateGerman = (
             />
             
             <button type="submit" className="flex items-center justify-center w-10 font-bold bg-blue-500 rounded-md 
-                hover:bg-blue-600 active:bg-blue-400 ml-4">
+                hover:bg-blue-600 active:bg-blue-400 ml-4 whitespace-nowrap hover:scale-105 active:scale-95 transition-transform duration-200">
                 <span><Image src={"/images/flags/germany.png"} width={32} height={32} alt="germany logo" /></span>
             </button>
 

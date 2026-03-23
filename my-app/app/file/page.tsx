@@ -152,11 +152,11 @@ const TranslateFilePage = (): JSX.Element => {
 
           {/* Controls Column - Only show when original text exists */}
           {originalText && (
-            <div className="lg:w-48 flex flex-col items-center justify-evenly gap-4 border">
+            <div className="lg:w-48 flex flex-col items-center justify-evenly gap-4 border border-gray-700 rounded-xl shadow-[0_0_15px_rgba(0,255,255,0.3),0_0_5px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] transition-shadow duration-300">
               <select
                 value={chooseLang}
                 onChange={handleLang}
-                className="text-4xl p-2 rounded bg-slate-950 cursor-pointer w-full text-center"
+                className="text-4xl py-2 rounded bg-slate-950 cursor-pointer w-3/5 text-center"
               >
                 <option value="FR">🇫🇷</option>
                 <option value="NL">🇳🇱</option>
@@ -176,7 +176,7 @@ const TranslateFilePage = (): JSX.Element => {
                 type="button"
                 onClick={handleTranslate}
                 disabled={loading}
-                className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-6 py-2 rounded text-white disabled:opacity-50 whitespace-nowrap"
+                className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-6 py-2 rounded text-white disabled:opacity-50 whitespace-nowrap hover:scale-105 active:scale-95 transition-transform duration-200"
               >
                 {loading ? "Translating..." : "Translate"}
               </button>
@@ -198,7 +198,7 @@ const TranslateFilePage = (): JSX.Element => {
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-6 py-2 rounded text-white"
+                  className="bg-green-600 hover:bg-green-700 active:bg-green-500 px-6 py-2 rounded text-white whitespace-nowrap hover:scale-105 active:scale-95 transition-transform duration-200"
                 >
                   Download
                 </button>
